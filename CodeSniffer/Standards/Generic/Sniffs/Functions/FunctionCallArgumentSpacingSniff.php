@@ -129,17 +129,17 @@ class Generic_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_C
                 } else {
                     // If there is a newline in the space, then they must be formatting
                     // each argument on a newline, which is valid, so ignore it.
-                    if (strpos($tokens[($nextSeparator + 1)]['content'], $phpcsFile->eolChar) === false) {
-                        $space = strlen($tokens[($nextSeparator + 1)]['content']);
-                        if ($space > 1) {
-                            $error = 'Expected 1 space after comma in function call; %s found';
-                            $data  = array($space);
-                            $fix   = $phpcsFile->addFixableError($error, $nextSeparator, 'TooMuchSpaceAfterComma', $data);
-                            if ($fix === true) {
-                                $phpcsFile->fixer->replaceToken(($nextSeparator + 1), ' ');
-                            }
-                        }
-                    }
+//                     if (strpos($tokens[($nextSeparator + 1)]['content'], $phpcsFile->eolChar) === false) {
+//                         $space = strlen($tokens[($nextSeparator + 1)]['content']);
+//                         if ($space > 1) {
+//                             $error = 'Expected 1 space after comma in function call; %s found';
+//                             $data  = array($space);
+//                             $fix   = $phpcsFile->addFixableError($error, $nextSeparator, 'TooMuchSpaceAfterComma', $data);
+//                             if ($fix === true) {
+//                                 $phpcsFile->fixer->replaceToken(($nextSeparator + 1), ' ');
+//                             }
+//                         }
+//                     }
                 }//end if
             } else {
                 // Token is a variable.
@@ -167,6 +167,4 @@ class Generic_Sniffs_Functions_FunctionCallArgumentSpacingSniff implements PHP_C
         }//end while
 
     }//end process()
-
-
 }//end class
