@@ -61,8 +61,8 @@ class Generic_Sniffs_Commenting_DocCommentSniff implements PHP_CodeSniffer_Sniff
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
         $tokens       = $phpcsFile->getTokens();
-        $commentEnd   = $phpcsFile->findNext(T_DOC_COMMENT_CLOSE_TAG, ($stackPtr + 1));
-        $commentStart = $tokens[$commentEnd]['comment_opener'];
+        $commentStart = $stackPtr;
+        $commentEnd   = $tokens[$stackPtr]['comment_closer'];
 
         $empty = array(
                   T_DOC_COMMENT_WHITESPACE,
@@ -159,7 +159,7 @@ class Generic_Sniffs_Commenting_DocCommentSniff implements PHP_CodeSniffer_Sniff
             }
         }
 
-        if (preg_match('|\p{Lu}|u', $shortContent[0]) === 0) {
+        if (preg_match('/\p{Lu}|\P{L}/u', $shortContent[0]) === 0) {
             $error = 'Doc comment short description must start with a capital letter';
             $phpcsFile->addError($error, $short, 'ShortNotCapital');
         }
@@ -189,7 +189,7 @@ class Generic_Sniffs_Commenting_DocCommentSniff implements PHP_CodeSniffer_Sniff
                 }
             }
 
-            if (preg_match('|\p{Lu}|u', $tokens[$long]['content'][0]) === 0) {
+            if (preg_match('/\p{Lu}|\P{L}/u', $tokens[$long]['content'][0]) === 0) {
                 $error = 'Doc comment long description must start with a capital letter';
                 $phpcsFile->addError($error, $long, 'LongNotCapital');
             }
@@ -250,7 +250,7 @@ class Generic_Sniffs_Commenting_DocCommentSniff implements PHP_CodeSniffer_Sniff
                     || ($paramGroupid !== null
                     && $paramGroupid !== $groupid)
                 ) {
-                    $error = 'Paramater tags must be grouped together in a doc commment';
+                    $error = 'Parameter tags must be grouped together in a doc commment';
                     $phpcsFile->addError($error, $tag, 'ParamGroup');
                 }
 
@@ -258,7 +258,7 @@ class Generic_Sniffs_Commenting_DocCommentSniff implements PHP_CodeSniffer_Sniff
                     $paramGroupid = $groupid;
                 }
             } else if ($groupid === $paramGroupid) {
-                $error = 'Tag cannot be grouped with paramater tags in a doc comment';
+                $error = 'Tag cannot be grouped with parameter tags in a doc comment';
                 $phpcsFile->addError($error, $tag, 'NonParamGroup');
             }//end if
 
@@ -328,7 +328,7 @@ class Generic_Sniffs_Commenting_DocCommentSniff implements PHP_CodeSniffer_Sniff
 
         // If there is a param group, it needs to be first.
         if ($paramGroupid !== null && $paramGroupid !== 0) {
-            $error = 'Paramater tags must be defined first in a doc commment';
+            $error = 'Parameter tags must be defined first in a doc commment';
             $phpcsFile->addError($error, $tagGroups[$paramGroupid][0], 'ParamNotFirst');
         }
 

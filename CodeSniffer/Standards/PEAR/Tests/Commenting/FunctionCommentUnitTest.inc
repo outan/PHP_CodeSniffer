@@ -125,10 +125,10 @@ class PHP_CodeSniffer_File
      * @param missing
      * @param
      */
-    public function missingDescroption($threeSpaces)
+    public function missingDescription($threeSpaces)
     {
 
-    }//end missingDescroption()
+    }//end missingDescription()
 
 
     /**
@@ -272,4 +272,15 @@ public function foo(&$tokens, $tokenizer, $eolChar)
  */
 public function _() {
     return $foo;
+}
+
+class Baz {
+    /**
+     * The PHP5 constructor
+     *
+     * No return tag
+     */
+    public function __construct() {
+
+    }
 }

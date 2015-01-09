@@ -96,7 +96,7 @@ class MyClass
      * @var   array
      * @since 4.0.0
      */
-    protected $actions = array();
+    var $actions = array();
 
     /**
      * The actions that this wizard step requires.
@@ -115,4 +115,24 @@ class MyClass
     protected $actions = array();
 
 }//end class
-?>
+
+class Foo
+{
+
+    private $foo; // comment
+
+    private $bar;
+
+}
+
+class Foo
+{
+
+    private $foo; // comment
+
+    /**
+     * @var type
+     */
+    private $bar;
+
+}

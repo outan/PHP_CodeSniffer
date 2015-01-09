@@ -236,3 +236,22 @@ $var = array(
         array('Foo'),
         'Errors',
        );
+
+$data = array(
+         'first',
+         'second',
+         'third',
+         // Add more here
+        );
+
+$data = array(
+         'first',
+         'second',
+         //'third',
+        );
+
+$data = array(
+         'first',
+         'second'
+         //'third',
+        );

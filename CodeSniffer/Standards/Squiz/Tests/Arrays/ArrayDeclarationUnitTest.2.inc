@@ -228,3 +228,22 @@ $var = [
         ['Foo'],
         'Errors',
        ];
+
+$data = [
+         'first',
+         'second',
+         'third',
+         // Add more here
+        ];
+
+$data = [
+         'first',
+         'second',
+         //'third',
+        ];
+
+$data = [
+         'first',
+         'second'
+         //'third',
+        ];

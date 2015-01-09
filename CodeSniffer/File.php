@@ -308,22 +308,24 @@ class PHP_CodeSniffer_File
         $this->phpcs      = $phpcs;
         $this->fixer      = new PHP_CodeSniffer_Fixer();
 
-        $cliValues = $phpcs->cli->getCommandLineValues();
-        if (isset($cliValues['showSources']) === true
-            && $cliValues['showSources'] !== true
-        ) {
-            $recordErrors = false;
-            foreach ($cliValues['reports'] as $report => $output) {
-                $reportClass = $phpcs->reporting->factory($report);
-                if (property_exists($reportClass, 'recordErrors') === false
-                    || $reportClass->recordErrors === true
-                ) {
-                    $recordErrors = true;
-                    break;
+        if (PHP_CODESNIFFER_INTERACTIVE === false) {
+            $cliValues = $phpcs->cli->getCommandLineValues();
+            if (isset($cliValues['showSources']) === true
+                && $cliValues['showSources'] !== true
+            ) {
+                $recordErrors = false;
+                foreach ($cliValues['reports'] as $report => $output) {
+                    $reportClass = $phpcs->reporting->factory($report);
+                    if (property_exists($reportClass, 'recordErrors') === false
+                        || $reportClass->recordErrors === true
+                    ) {
+                        $recordErrors = true;
+                        break;
+                    }
                 }
-            }
 
-            $this->_recordErrors = $recordErrors;
+                $this->_recordErrors = $recordErrors;
+            }
         }
 
     }//end __construct()
@@ -2571,7 +2573,7 @@ class PHP_CodeSniffer_File
      *        )
      * </code>
      *
-     * Parameters with default values have and additional array indice of
+     * Parameters with default values have an additional array index of
      * 'default' with the value of the default as a string.
      *
      * @param int $stackPtr The position in the stack of the T_FUNCTION token
@@ -3220,6 +3222,7 @@ class PHP_CodeSniffer_File
         $endTokens = PHP_CodeSniffer_Tokens::$blockOpeners;
 
         $endTokens[T_COLON]     = true;
+        $endTokens[T_COMMA]     = true;
         $endTokens[T_SEMICOLON] = true;
         $endTokens[T_OPEN_TAG]  = true;
         $endTokens[T_CLOSE_TAG] = true;
@@ -3230,10 +3233,6 @@ class PHP_CodeSniffer_File
             if (isset($endTokens[$this->_tokens[$i]['code']]) === true) {
                 // Found the end of the previous statement.
                 return $lastNotEmpty;
-            }
-
-            if ($this->_tokens[$i]['code'] !== T_WHITESPACE) {
-                $lastNotEmpty = $i;
             }
 
             // Skip nested statements.
@@ -3249,6 +3248,10 @@ class PHP_CodeSniffer_File
                 && $i === $this->_tokens[$i]['parenthesis_closer']
             ) {
                 $i = $this->_tokens[$i]['parenthesis_opener'];
+            }
+
+            if ($this->_tokens[$i]['code'] !== T_WHITESPACE) {
+                $lastNotEmpty = $i;
             }
         }//end for
 
@@ -3266,29 +3269,32 @@ class PHP_CodeSniffer_File
      */
     public function findEndOfStatement($start)
     {
-        $endTokens = PHP_CodeSniffer_Tokens::$blockOpeners;
-
-        $endTokens[T_COLON]     = true;
-        $endTokens[T_SEMICOLON] = true;
-        $endTokens[T_OPEN_TAG]  = true;
-        $endTokens[T_CLOSE_TAG] = true;
+        $endTokens = array(
+                      T_COLON                => true,
+                      T_COMMA                => true,
+                      T_SEMICOLON            => true,
+                      T_CLOSE_PARENTHESIS    => true,
+                      T_CLOSE_SQUARE_BRACKET => true,
+                      T_CLOSE_CURLY_BRACKET  => true,
+                      T_OPEN_TAG             => true,
+                      T_CLOSE_TAG            => true,
+                     );
 
         $lastNotEmpty = $start;
 
-        for ($i = $start; $i >= $this->numTokens; $i++) {
-            if (isset($endTokens[$this->_tokens[$i]['code']]) === true) {
+        for ($i = $start; $i < $this->numTokens; $i++) {
+            if ($i !== $start && isset($endTokens[$this->_tokens[$i]['code']]) === true) {
                 // Found the end of the statement.
-                if ($this->_tokens[$i]['code'] === T_OPEN_TAG
+                if ($this->_tokens[$i]['code'] === T_CLOSE_PARENTHESIS
+                    || $this->_tokens[$i]['code'] === T_CLOSE_SQUARE_BRACKET
+                    || $this->_tokens[$i]['code'] === T_CLOSE_CURLY_BRACKET
+                    || $this->_tokens[$i]['code'] === T_OPEN_TAG
                     || $this->_tokens[$i]['code'] === T_CLOSE_TAG
                 ) {
                     return $lastNotEmpty;
                 }
 
                 return $i;
-            }
-
-            if ($this->_tokens[$i]['code'] !== T_WHITESPACE) {
-                $lastNotEmpty = $i;
             }
 
             // Skip nested statements.
@@ -3304,6 +3310,10 @@ class PHP_CodeSniffer_File
                 && $i === $this->_tokens[$i]['parenthesis_opener']
             ) {
                 $i = $this->_tokens[$i]['parenthesis_closer'];
+            }
+
+            if ($this->_tokens[$i]['code'] !== T_WHITESPACE) {
+                $lastNotEmpty = $i;
             }
         }//end for
 

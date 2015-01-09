@@ -236,7 +236,10 @@ class PEAR_Sniffs_Functions_FunctionCallSignatureSniff implements PHP_CodeSniffe
 
         // Checking this: $value = my_function(...[*]).
         $spaceBeforeClose = 0;
-        if ($tokens[($closer - 1)]['code'] === T_WHITESPACE) {
+        $prev = $phpcsFile->findPrevious(PHP_CodeSniffer_Tokens::$emptyTokens, ($closer - 1), $openBracket, true);
+        if ($tokens[$prev]['line'] !== $tokens[$closer]['line']) {
+            $spaceBeforeClose = 'newline';
+        } else if ($tokens[($closer - 1)]['code'] === T_WHITESPACE) {
             $spaceBeforeClose = strlen($tokens[($closer - 1)]['content']);
         }
 
@@ -266,7 +269,7 @@ class PEAR_Sniffs_Functions_FunctionCallSignatureSniff implements PHP_CodeSniffe
      * @param PHP_CodeSniffer_File $phpcsFile   The file being scanned.
      * @param int                  $stackPtr    The position of the current token
      *                                          in the stack passed in $tokens.
-     * @param int                  $openBracket The position of the openning bracket
+     * @param int                  $openBracket The position of the opening bracket
      *                                          in the stack passed in $tokens.
      * @param array                $tokens      The stack of tokens that make up
      *                                          the file.

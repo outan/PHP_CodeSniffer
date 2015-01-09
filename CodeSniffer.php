@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP_CodeSniffer tokenises PHP code and detects violations of a
+ * PHP_CodeSniffer tokenizes PHP code and detects violations of a
  * defined set of coding standards.
  *
  * PHP version 5
@@ -41,7 +41,7 @@ if (interface_exists('PHP_CodeSniffer_Sniff', true) === false) {
 }
 
 /**
- * PHP_CodeSniffer tokenises PHP code and detects violations of a
+ * PHP_CodeSniffer tokenizes PHP code and detects violations of a
  * defined set of coding standards.
  *
  * Standards are specified by classes that implement the PHP_CodeSniffer_Sniff
@@ -584,6 +584,7 @@ class PHP_CodeSniffer
         $files        = (array) $files;
         $cliValues    = $this->cli->getCommandLineValues();
         $showProgress = $cliValues['showProgress'];
+        $useColors    = $cliValues['colors'];
 
         if (PHP_CODESNIFFER_VERBOSITY > 0) {
             echo 'Creating file list... ';
@@ -632,13 +633,25 @@ class PHP_CodeSniffer
                 $errors   = $phpcsFile->getErrorCount();
                 $warnings = $phpcsFile->getWarningCount();
                 if ($errors > 0) {
+                    if ($useColors === true) {
+                        echo "\033[31m";
+                    }
+
                     echo 'E';
                 } else if ($warnings > 0) {
+                    if ($useColors === true) {
+                        echo "\033[33m";
+                    }
+
                     echo 'W';
                 } else {
                     echo '.';
                 }
-            }
+
+                if ($useColors === true) {
+                    echo "\033[0m";
+                }
+            }//end if
 
             $dots++;
             if ($dots === 60) {
@@ -2028,7 +2041,7 @@ class PHP_CodeSniffer
      * Prepares token content for output to screen.
      *
      * Replaces invisible characters so they are visible. On non-Windows
-     * OSes it will also colour the invisble characters.
+     * OSes it will also colour the invisible characters.
      *
      * @param string $content The content to prepare.
      *

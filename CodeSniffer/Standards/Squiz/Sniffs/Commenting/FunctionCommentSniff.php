@@ -20,23 +20,6 @@ if (class_exists('PEAR_Sniffs_Commenting_FunctionCommentSniff', true) === false)
 /**
  * Parses and verifies the doc comments for functions.
  *
- * Verifies that :
- * <ul>
- *  <li>A comment exists</li>
- *  <li>There is a blank newline after the short description</li>
- *  <li>There is a blank newline between the long and short description</li>
- *  <li>There is a blank newline between the long description and tags</li>
- *  <li>Parameter names represent those in the method</li>
- *  <li>Parameter comments are in the correct order</li>
- *  <li>Parameter comments are complete</li>
- *  <li>A type hint is provided for array and custom class</li>
- *  <li>Type hint matches the actual variable/class type</li>
- *  <li>A blank line is present before the first and after the last parameter</li>
- *  <li>A return type exists</li>
- *  <li>Any throw tag must have a comment</li>
- *  <li>The tag order and indentation are correct</li>
- * </ul>
- *
  * @category  PHP
  * @package   PHP_CodeSniffer
  * @author    Greg Sherwood <gsherwood@squiz.net>
@@ -65,19 +48,8 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff extends PEAR_Sniffs_Commentin
         $tokens = $phpcsFile->getTokens();
 
         // Skip constructor and destructor.
-        $className = '';
-        foreach ($tokens[$stackPtr]['conditions'] as $condPtr => $condition) {
-            if ($condition === T_CLASS || $condition === T_INTERFACE) {
-                $className = $phpcsFile->getDeclarationName($condPtr);
-                $className = strtolower(ltrim($className, '_'));
-            }
-        }
-
         $methodName      = $phpcsFile->getDeclarationName($stackPtr);
         $isSpecialMethod = ($methodName === '__construct' || $methodName === '__destruct');
-        if ($methodName !== '_') {
-            $methodName = strtolower(ltrim($methodName, '_'));
-        }
 
         $return = null;
         foreach ($tokens[$commentStart]['comment_tags'] as $tag) {
@@ -114,13 +86,15 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff extends PEAR_Sniffs_Commentin
 
                 $suggestedType = implode('|', $suggestedNames);
                 if ($content !== $suggestedType) {
-                    $error = 'Function return type "%s" is invalid';
                     $error = 'Expected "%s" but found "%s" for function return type';
                     $data  = array(
                               $suggestedType,
                               $content,
                              );
-                    $phpcsFile->addError($error, $return, 'InvalidReturn', $data);
+                    $fix   = $phpcsFile->addFixableError($error, $return, 'InvalidReturn', $data);
+                    if ($fix === true) {
+                        $phpcsFile->fixer->replaceToken(($return + 2), $suggestedType);
+                    }
                 }
 
                 // If the return type is void, make sure there is

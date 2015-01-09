@@ -52,4 +52,15 @@ somefunction6('
     $foo
 );
 
-?>
+$this->setFoo(true
+    ? 1
+    : 2, false, array(
+    'value',
+    'more'));
+
+$this->setFoo('some'
+    . 'long'
+    . 'text', 'string');
+
+foo(bar(), $a);
+foo();bar();

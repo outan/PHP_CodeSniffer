@@ -196,6 +196,11 @@ final class PHP_CodeSniffer_Tokens
                                  T_MODULUS             => 5,
                                  T_POWER               => 5,
 
+                                 T_SL                  => 5,
+                                 T_SR                  => 5,
+                                 T_SL_EQUAL            => 5,
+                                 T_SR_EQUAL            => 5,
+
                                  T_EQUAL               => 5,
                                  T_AND_EQUAL           => 5,
                                  T_CONCAT_EQUAL        => 5,
@@ -351,6 +356,10 @@ final class PHP_CodeSniffer_Tokens
                                    T_POWER                    => 1,
                                    T_BITWISE_AND              => 1,
                                    T_BITWISE_OR               => 1,
+                                   T_SL                       => 2,
+                                   T_SR                       => 2,
+                                   T_SL_EQUAL                 => 3,
+                                   T_SR_EQUAL                 => 3,
                                    T_ARRAY_HINT               => 5,
                                    T_GREATER_THAN             => 1,
                                    T_LESS_THAN                => 1,
@@ -381,6 +390,8 @@ final class PHP_CodeSniffer_Tokens
                                        T_PLUS_EQUAL   => T_PLUS_EQUAL,
                                        T_XOR_EQUAL    => T_XOR_EQUAL,
                                        T_DOUBLE_ARROW => T_DOUBLE_ARROW,
+                                       T_SL_EQUAL     => T_SL_EQUAL,
+                                       T_SR_EQUAL     => T_SR_EQUAL,
                                       );
 
     /**
@@ -527,6 +538,8 @@ final class PHP_CodeSniffer_Tokens
                                 T_POWER       => T_POWER,
                                 T_BITWISE_AND => T_BITWISE_AND,
                                 T_BITWISE_OR  => T_BITWISE_OR,
+                                T_SL          => T_SL,
+                                T_SR          => T_SR,
                                );
 
     /**
